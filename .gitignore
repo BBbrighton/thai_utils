@@ -1,0 +1,16 @@
+*.pyc
+*.py~
+*.comp~
+*.swp
+*.egg-info
+*.sql
+*.db
+*.json
+dist/
+build/
+thai_utils/docs/current
+.tern-port
+node_modules
+.DS_Store
+.idea
+.vscode

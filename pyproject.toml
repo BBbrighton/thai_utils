@@ -1,0 +1,18 @@
+[project]
+name = "thai_utils"
+version = "0.0.1"
+description = "Thai language utilities for Frappe/ERPNext"
+authors = [
+    { name = "Your Name", email = "your@email.com" }
+]
+dependencies = [
+    "frappe",
+    "pythainlp>=4.0.0"
+]
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+
+[build-system]
+requires = ["setuptools>=40.8.0", "wheel"]
+build-backend = "setuptools.build_meta"

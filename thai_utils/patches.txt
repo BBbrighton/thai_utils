@@ -1,0 +1,7 @@
+# List of patches to run after app installation/update
+# Format: "module_path.patch_file.method_name"
+
+patches = [
+    # Example:
+    # "thai_utils.patches.v1_0.update_thai_settings"
+]

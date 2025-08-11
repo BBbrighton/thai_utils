@@ -1,0 +1,140 @@
+<!-- Example Print Format for Sales Invoice with Thai Amount and Date -->
+<!-- Copy this to your Print Format HTML -->
+
+<style>
+    .print-format {
+        font-family: 'Sarabun', Arial, sans-serif;
+        font-size: 14px;
+    }
+    
+    .header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .amount-section {
+        margin-top: 30px;
+        border: 1px solid #ddd;
+        padding: 15px;
+        background-color: #f9f9f9;
+    }
+    
+    .thai-amount {
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="print-format">
+    <div class="header">
+        <h2>ใบแจ้งหนี้ / Invoice</h2>
+        <p>เลขที่: {{ doc.name }}</p>
+        <p>วันที่: {{ doc.posting_date | thai_date }}</p>
+        <!-- Alternative date formats:
+        Short: {{ doc.posting_date | thai_date('%-d %b %Y') }}
+        With day: {{ doc.posting_date | thai_date('%A %-d %B %Y') }}
+        -->
+    </div>
+    
+    <!-- Customer Information -->
+    <div class="customer-info">
+        <p><strong>ลูกค้า / Customer:</strong> {{ doc.customer_name }}</p>
+        <p><strong>ที่อยู่ / Address:</strong> {{ doc.address_display }}</p>
+    </div>
+    
+    <!-- Items Table -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ลำดับ<br>No.</th>
+                <th>รายการ<br>Description</th>
+                <th>จำนวน<br>Qty</th>
+                <th>ราคาต่อหน่วย<br>Unit Price</th>
+                <th>จำนวนเงิน<br>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in doc.items %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ item.item_name }}<br>{{ item.description }}</td>
+                <td class="text-right">{{ item.qty }} {{ item.uom }}</td>
+                <td class="text-right">{{ item.rate | round(2) }}</td>
+                <td class="text-right">{{ item.amount | round(2) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <!-- Total Section -->
+    <div class="row">
+        <div class="col-xs-6">
+            <!-- Empty space -->
+        </div>
+        <div class="col-xs-6">
+            <table class="table">
+                <tr>
+                    <td>รวมเงิน / Subtotal:</td>
+                    <td class="text-right">{{ doc.total | round(2) }}</td>
+                </tr>
+                {% if doc.discount_amount %}
+                <tr>
+                    <td>ส่วนลด / Discount:</td>
+                    <td class="text-right">{{ doc.discount_amount | round(2) }}</td>
+                </tr>
+                {% endif %}
+                {% if doc.total_taxes_and_charges %}
+                <tr>
+                    <td>ภาษีมูลค่าเพิ่ม 7% / VAT 7%:</td>
+                    <td class="text-right">{{ doc.total_taxes_and_charges | round(2) }}</td>
+                </tr>
+                {% endif %}
+                <tr style="font-weight: bold;">
+                    <td>รวมทั้งสิ้น / Grand Total:</td>
+                    <td class="text-right">{{ doc.grand_total | round(2) }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Thai Amount in Words -->
+    <div class="amount-section">
+        <p><strong>จำนวนเงินรวมทั้งสิ้น:</strong> {{ "{:,.2f}".format(doc.grand_total) }} บาท</p>
+        <p class="thai-amount">
+            <strong>ตัวอักษร:</strong> 
+            ({{ doc.grand_total | thai_baht }})
+        </p>
+    </div>
+    
+    <!-- Payment Due Date -->
+    {% if doc.due_date %}
+    <div style="margin-top: 20px;">
+        <p><strong>กำหนดชำระ:</strong> {{ doc.due_date | thai_date('%A %-d %B %Y') }}</p>
+    </div>
+    {% endif %}
+    
+    <!-- Signature Section -->
+    <div class="row" style="margin-top: 60px;">
+        <div class="col-xs-6 text-center">
+            <p>_______________________</p>
+            <p>ผู้รับเงิน / Receiver</p>
+            <p>วันที่ / Date: __________</p>
+        </div>
+        <div class="col-xs-6 text-center">
+            <p>_______________________</p>
+            <p>ผู้อนุมัติ / Authorized By</p>
+            <p>วันที่ / Date: __________</p>
+        </div>
+    </div>
+</div>
+
+<!-- 
+Usage Notes:
+1. {{ amount | thai_baht }} - Converts amount to Thai words
+2. {{ date | thai_date }} - Formats date in Thai (default: 1 มกราคม 2568)
+3. {{ date | thai_date('%-d %b %Y') }} - Short format (1 ม.ค. 2568)
+4. {{ date | thai_date('%A %-d %B %Y') }} - With day name (วันจันทร์ 1 มกราคม 2568)
+5. Make sure thai_utils app is installed on your site
+-->
