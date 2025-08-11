@@ -1,0 +1,205 @@
+<style>
+    .test-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+        background: #f9f9f9;
+        border-radius: 5px;
+    }
+    .test-title {
+        color: #2c3e50;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 5px;
+    }
+    .test-item {
+        margin: 8px 0;
+        padding: 8px;
+        background: white;
+        border-left: 3px solid #3498db;
+    }
+    .test-label {
+        font-weight: bold;
+        color: #555;
+    }
+    .test-result {
+        color: #e74c3c;
+        font-size: 16px;
+    }
+</style>
+
+<h2>Thai Utils Functions Test</h2>
+
+<!-- Test 1: Currency to Thai Words -->
+<div class="test-section">
+    <div class="test-title">1. ทดสอบการแปลงตัวเลขเป็นคำอ่านภาษาไทย (Currency to Thai Words)</div>
+    
+    <!-- Test with document amount -->
+    <div class="test-item">
+        <span class="test-label">Document Grand Total:</span> 
+        {{ "{:,.2f}".format(doc.grand_total or 0) }} บาท<br>
+        <span class="test-label">Thai Words:</span> 
+        <span class="test-result">{{ doc.grand_total | thai_baht }}</span>
+    </div>
+    
+    <!-- Test with fixed amounts -->
+    <div class="test-item">
+        <span class="test-label">Test 1 บาท:</span> 
+        <span class="test-result">{{ 1 | thai_baht }}</span>
+    </div>
+    
+    <div class="test-item">
+        <span class="test-label">Test 11 บาท:</span> 
+        <span class="test-result">{{ 11 | thai_baht }}</span>
+    </div>
+    
+    <div class="test-item">
+        <span class="test-label">Test 21 บาท:</span> 
+        <span class="test-result">{{ 21 | thai_baht }}</span>
+    </div>
+    
+    <div class="test-item">
+        <span class="test-label">Test 111.11 บาท:</span> 
+        <span class="test-result">{{ 111.11 | thai_baht }}</span>
+    </div>
+    
+    <div class="test-item">
+        <span class="test-label">Test 1,234.56 บาท:</span> 
+        <span class="test-result">{{ 1234.56 | thai_baht }}</span>
+    </div>
+    
+    <div class="test-item">
+        <span class="test-label">Test 999,999.99 บาท:</span> 
+        <span class="test-result">{{ 999999.99 | thai_baht }}</span>
+    </div>
+    
+    <div class="test-item">
+        <span class="test-label">Test 1,000,000 บาท:</span> 
+        <span class="test-result">{{ 1000000 | thai_baht }}</span>
+    </div>
+</div>
+
+<!-- Test 2: Thai Date Formatting -->
+<div class="test-section">
+    <div class="test-title">2. ทดสอบการแสดงวันที่ภาษาไทย (Thai Date Formatting)</div>
+    
+    <!-- Test with document date -->
+    <div class="test-item">
+        <span class="test-label">Document Date (transaction_date):</span> 
+        {{ doc.transaction_date }}<br>
+        <span class="test-label">Thai Format:</span> 
+        <span class="test-result">{{ doc.transaction_date | thai_date }}</span>
+    </div>
+    
+    <!-- Different date formats -->
+    <div class="test-item">
+        <span class="test-label">Default Format (%-d %B %Y):</span><br>
+        <span class="test-result">{{ doc.transaction_date | thai_date }}</span>
+    </div>
+    
+    <div class="test-item">
+        <span class="test-label">With Day Name (%A %-d %B %Y):</span><br>
+        <span class="test-result">{{ doc.transaction_date | thai_date('%A %-d %B %Y') }}</span>
+    </div>
+    
+    <div class="test-item">
+        <span class="test-label">Short Month (%-d %b %Y):</span><br>
+        <span class="test-result">{{ doc.transaction_date | thai_date('%-d %b %Y') }}</span>
+    </div>
+    
+    <div class="test-item">
+        <span class="test-label">Numeric Format (%-d/%m/%Y):</span><br>
+        <span class="test-result">{{ doc.transaction_date | thai_date('%-d/%m/%Y') }}</span>
+    </div>
+    
+    <div class="test-item">
+        <span class="test-label">Full Format (%A ที่ %-d %B พ.ศ. %Y):</span><br>
+        <span class="test-result">{{ doc.transaction_date | thai_date('%A ที่ %-d %B พ.ศ. %Y') }}</span>
+    </div>
+    
+    <!-- Test schedule_date if available -->
+    {% if doc.schedule_date %}
+    <div class="test-item">
+        <span class="test-label">Schedule Date:</span> {{ doc.schedule_date }}<br>
+        <span class="test-label">Thai Format:</span> 
+        <span class="test-result">{{ doc.schedule_date | thai_date('%-d %B %Y') }}</span>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Test 3: Using currency_to_thai_words directly -->
+<div class="test-section">
+    <div class="test-title">3. ทดสอบ currency_to_thai_words function</div>
+    
+    <div class="test-item">
+        <span class="test-label">Using currency_to_thai_words:</span><br>
+        <span class="test-result">{{ doc.grand_total | currency_to_thai_words }}</span>
+    </div>
+</div>
+
+<!-- Test 4: Edge Cases -->
+<div class="test-section">
+    <div class="test-title">4. ทดสอบกรณีพิเศษ (Edge Cases)</div>
+    
+    <div class="test-item">
+        <span class="test-label">Zero (0):</span> 
+        <span class="test-result">{{ 0 | thai_baht }}</span>
+    </div>
+    
+    <div class="test-item">
+        <span class="test-label">Decimal Only (0.50):</span> 
+        <span class="test-result">{{ 0.50 | thai_baht }}</span>
+    </div>
+    
+    <div class="test-item">
+        <span class="test-label">Large Number (123,456,789.99):</span> 
+        <span class="test-result">{{ 123456789.99 | thai_baht }}</span>
+    </div>
+</div>
+
+<!-- Test 5: Real Usage Example -->
+<div class="test-section">
+    <div class="test-title">5. ตัวอย่างการใช้งานจริง (Real Usage Example)</div>
+    
+    <div style="border: 2px solid #2c3e50; padding: 20px; background: white;">
+        <h3 style="text-align: center;">ใบสั่งซื้อ / Purchase Order</h3>
+        <p><strong>เลขที่:</strong> {{ doc.name }}</p>
+        <p><strong>วันที่:</strong> {{ doc.transaction_date | thai_date('%A %-d %B %Y') }}</p>
+        <p><strong>ผู้ขาย:</strong> {{ doc.supplier_name }}</p>
+        
+        <hr>
+        
+        <table style="width: 100%;">
+            <tr>
+                <td><strong>ยอดรวม / Total:</strong></td>
+                <td style="text-align: right;">{{ "{:,.2f}".format(doc.total or 0) }} บาท</td>
+            </tr>
+            {% if doc.total_taxes_and_charges %}
+            <tr>
+                <td><strong>ภาษี / Tax:</strong></td>
+                <td style="text-align: right;">{{ "{:,.2f}".format(doc.total_taxes_and_charges) }} บาท</td>
+            </tr>
+            {% endif %}
+            <tr style="font-size: 18px; font-weight: bold;">
+                <td><strong>ยอดรวมทั้งสิ้น / Grand Total:</strong></td>
+                <td style="text-align: right;">{{ "{:,.2f}".format(doc.grand_total or 0) }} บาท</td>
+            </tr>
+        </table>
+        
+        <div style="margin-top: 15px; padding: 10px; background: #ecf0f1;">
+            <strong>จำนวนเงิน (ตัวอักษร):</strong><br>
+            <span style="font-size: 16px; color: #e74c3c;">
+                ({{ doc.grand_total | thai_baht }})
+            </span>
+        </div>
+        
+        {% if doc.schedule_date %}
+        <p style="margin-top: 15px;">
+            <strong>กำหนดส่งมอบ:</strong> 
+            {{ doc.schedule_date | thai_date('%-d %B %Y') }}
+        </p>
+        {% endif %}
+    </div>
+</div>
