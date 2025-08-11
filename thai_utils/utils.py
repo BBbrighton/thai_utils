@@ -5,26 +5,7 @@
 
 from __future__ import unicode_literals
 import frappe
-
-# Try to import pythainlp
-try:
-    from pythainlp.util import bahttext, thai_strftime
-    PYTHAINLP_AVAILABLE = True
-except ImportError:
-    PYTHAINLP_AVAILABLE = False
-    # Show error message in frappe UI
-    import subprocess
-    import sys
-    
-    def install_pythainlp():
-        try:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "pythainlp>=4.0.0"])
-            return True
-        except:
-            return False
-    
-    if not install_pythainlp():
-        frappe.log("pythainlp is not installed. Installing it now...")
+from pythainlp.util import bahttext, thai_strftime
 
 
 @frappe.whitelist()
@@ -36,13 +17,6 @@ def currency_to_thai_words(amount):
     - 1111.11 → หนึ่งพันหนึ่งร้อยสิบเอ็ดบาทสิบเอ็ดสตางค์
     - 1000000 → หนึ่งล้านบาทถ้วน
     """
-    if not PYTHAINLP_AVAILABLE:
-        # Try to import again after installation attempt
-        try:
-            from pythainlp.util import bahttext
-        except ImportError:
-            frappe.throw("pythainlp library is not installed. Please run: bench --site your-site install-app thai_utils")
-    
     if amount is None:
         return ''
     
@@ -77,13 +51,6 @@ def format_thai_date(date, fmt='%-d %B %Y'):
     Returns:
         Thai formatted date string
     """
-    if not PYTHAINLP_AVAILABLE:
-        # Try to import again after installation attempt
-        try:
-            from pythainlp.util import thai_strftime
-        except ImportError:
-            frappe.throw("pythainlp library is not installed. Please run: bench --site your-site install-app thai_utils")
-    
     if date is None:
         return ''
     
